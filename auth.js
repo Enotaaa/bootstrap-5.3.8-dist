@@ -12,9 +12,21 @@ const API_CONFIG = {
     }
 };
 
+// Демо-данные пользователя
+const DEMO_USER = {
+    id: 1,
+    firstName: 'Василий',
+    lastName: 'Николаевич',
+    email: 'demo@example.com',
+    phone: '+7 (999) 123-45-67',
+    city: 'moscow',
+    about: 'Люблю животных и помогаю им находить новые дома.',
+    newsletterSubscription: true
+};
+
 // Токен авторизации и пользователь
 let authToken = localStorage.getItem('authToken');
-let currentUser = JSON.parse(localStorage.getItem('userData'));
+let currentUser = JSON.parse(localStorage.getItem('userData')) || DEMO_USER;
 
 // Основные функции авторизации
 function checkAuth() {
@@ -33,7 +45,7 @@ function updateUIAfterAuth(user) {
     navButtons.innerHTML = `
         <div class="dropdown">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-person-circle me-2"></i>${user.firstName}
+                <i class="bi bi-person-circle me-2"></i>${user.firstName} ${user.lastName}
             </button>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>Мой профиль</a></li>
@@ -105,12 +117,7 @@ async function makeApiRequest(url, options = {}) {
             return {
                 data: {
                     token: 'demo-token-' + Date.now(),
-                    user: {
-                        id: 1,
-                        firstName: 'Демо',
-                        lastName: 'Пользователь',
-                        email: 'demo@example.com'
-                    }
+                    user: DEMO_USER
                 },
                 success: true
             };
