@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebPets - Каталог питомцев</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-heart-fill me-2"></i>WebPets
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="catalog.html">Каталог питомцев</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add-pet.html">Добавить питомца</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-primary me-2" onclick="openModal('loginModal')">Войти</button>
+                    <button class="btn btn-primary" onclick="openModal('registerModal')">Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Контейнер для уведомлений -->
+    <div id="alertsContainer" class="alert-position"></div>
+
+    <div class="container mt-4">
+        <h1 class="section-title">Каталог питомцев</h1>
+        
+        <!-- Фильтры и поиск -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card filter-section mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-funnel me-2"></i>Фильтры</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Тип животного</label>
+                            <select class="form-select" id="typeFilter">
+                                <option value="">Все</option>
+                                <option value="cat">Коты</option>
+                                <option value="dog">Собаки</option>
+                                <option value="bird">Птицы</option>
+                                <option value="rodent">Грызуны</option>
+                                <option value="other">Другие</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Возраст</label>
+                            <select class="form-select" id="ageFilter">
+                                <option value="">Любой</option>
+                                <option value="baby">До 1 года</option>
+                                <option value="young">1-3 года</option>
+                                <option value="adult">3-7 лет</option>
+                                <option value="senior">Старше 7 лет</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Пол</label>
+                            <select class="form-select" id="genderFilter">
+                                <option value="">Любой</option>
+                                <option value="male">Мужской</option>
+                                <option value="female">Женский</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100" onclick="applyFilters()">
+                            <i class="bi bi-check-lg me-2"></i>Применить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Список питомцев -->
+            <div class="col-md-9">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Поиск питомцев...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="sortSelect">
+                                    <option value="newest">Сначала новые</option>
+                                    <option value="oldest">Сначала старые</option>
+                                    <option value="name">По имени</option>
+                                    <option value="age">По возрасту</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row" id="petsContainer">
+                    <!-- Питомцы будут загружены через JavaScript -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" id="loadMoreBtn">
+                        <i class="bi bi-arrow-down-circle me-2"></i>Загрузить еще
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="py-4 mt-5 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5><i class="bi bi-heart-fill me-2"></i>WebPets</h5>
+                    <p class="mb-0 text-muted">Мы помогаем питомцам находить любящие дома с 2020 года.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Быстрые ссылки</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light text-decoration-none">Главная</a></li>
+                        <li><a href="catalog.html" class="text-light text-decoration-none">Каталог питомцев</a></li>
+                        <li><a href="add-pet.html" class="text-light text-decoration-none">Добавить питомца</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Следите за нами</h5>
+                    <div class="d-flex">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0 text-muted">&copy; 2023 WebPets. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальные окна -->
+    <div class="modal fade" id="petModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="petModalTitle">Информация о питомце</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="petModalBody">
+                    <!-- Контент будет загружен через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Модальные окна авторизации -->
+    <!-- Включить модальные окна из auth.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="auth.js"></script>
+    <script>
+// Данные питомцев для демонстрации
+const petsData = [
+    {
+        id: 1,
+        name: "Мурзик",
+        type: "cat",
+        age: "3 месяца",
+        gender: "male",
+        breed: "Дворовый",
+        description: "Дружелюбный котенок, ищет любящую семью. Очень игривый и ласковый.",
+        image: "image1.jfif",
+        vaccinated: true,
+        sterilized: false
+    },
+    {
+        id: 2,
+        name: "Бобик",
+        type: "dog",
+        age: "4 месяца",
+        gender: "male",
+        breed: "Лабрадор",
+        description: "Энергичный щенок, любит играть и гулять. Отлично ладит с детьми.",
+        image: "labrador.jpg",
+        vaccinated: true,
+        sterilized: true
+    },
+    {
+        id: 3,
+        name: "Марта",
+        type: "dog",
+        age: "2 года",
+        gender: "female",
+        breed: "Овчарка",
+        description: "Умная и преданная собака. Нуждается в активных прогулках.",
+        image: "ovcharka.jpg",
+        vaccinated: true,
+        sterilized: true
+    },
+    {
+        id: 4,
+        name: "Вася",
+        type: "cat",
+        age: "1 год",
+        gender: "male",
+        breed: "Сиамский",
+        description: "Элегантный кот с голубыми глазами. Любит внимание и комфорт.",
+        image: "siamkot.jpg",
+        vaccinated: false,
+        sterilized: true
+    },
+    {
+        id: 5,
+        name: "Кеша",
+        type: "bird",
+        age: "6 месяцев",
+        gender: "male",
+        breed: "Попугай",
+        description: "Говорящий попугай. Очень общительный и веселый.",
+        image: "image3.jfif",
+        vaccinated: true,
+        sterilized: false
+    },
+    {
+        id: 6,
+        name: "Снежок",
+        type: "rodent",
+        age: "8 месяцев",
+        gender: "male",
+        breed: "Кролик",
+        description: "Пушистый и добрый. Любит свежие овощи и внимание.",
+        image: "image4.jfif",
+        vaccinated: false,
+        sterilized: false
+    }
+];
+
+let currentPage = 1;
+const petsPerPage = 6;
+let currentFilters = {
+    type: '',
+    age: '',
+    gender: '',
+    search: '',
+    sort: 'newest'
+};
+let filteredPets = [...petsData];
+
+// Загрузка питомцев
+function loadPets(page = 1, filters = {}) {
+    currentPage = page;
+    currentFilters = { ...currentFilters, ...filters };
+    
+    // Применяем фильтры
+    applyFilters();
+    
+    // Показываем/скрываем кнопку "Загрузить еще"
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const hasMorePets = currentPage * petsPerPage < filteredPets.length;
+    loadMoreBtn.style.display = hasMorePets ? 'block' : 'none';
+}
+
+function applyFilters() {
+    filteredPets = [...petsData];
+    
+    // Фильтр по типу
+    if (currentFilters.type) {
+        filteredPets = filteredPets.filter(pet => pet.type === currentFilters.type);
+    }
+    
+    // Фильтр по возрасту
+    if (currentFilters.age) {
+        filteredPets = filteredPets.filter(pet => {
+            const age = pet.age.toLowerCase();
+            switch (currentFilters.age) {
+                case 'baby': return age.includes('месяц') || age.includes('месяцев');
+                case 'young': return age.includes('год') || age.includes('1') || age.includes('2');
+                case 'adult': return age.includes('3') || age.includes('4') || age.includes('5');
+                case 'senior': return age.includes('6') || age.includes('7') || age.includes('8') || 
+                                  age.includes('9') || age.includes('старше');
+                default: return true;
+            }
+        });
+    }
+    
+    // Фильтр по полу
+    if (currentFilters.gender) {
+        filteredPets = filteredPets.filter(pet => pet.gender === currentFilters.gender);
+    }
+    
+    // Поиск по имени и описанию
+    if (currentFilters.search) {
+        const searchTerm = currentFilters.search.toLowerCase();
+        filteredPets = filteredPets.filter(pet => 
+            pet.name.toLowerCase().includes(searchTerm) ||
+            pet.description.toLowerCase().includes(searchTerm) ||
+            pet.breed.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Сортировка
+    switch (currentFilters.sort) {
+        case 'name':
+            filteredPets.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+        case 'age':
+            filteredPets.sort((a, b) => {
+                const ageA = getAgeInMonths(a.age);
+                const ageB = getAgeInMonths(b.age);
+                return ageA - ageB;
+            });
+            break;
+        case 'oldest':
+            filteredPets.reverse();
+            break;
+        default:
+            // newest - оставляем как есть
+            break;
+    }
+    
+    displayPets();
+}
+
+function getAgeInMonths(ageString) {
+    const age = ageString.toLowerCase();
+    if (age.includes('месяц')) {
+        return parseInt(age) || 1;
+    }
+    if (age.includes('год') || age.includes('лет')) {
+        const years = parseInt(age) || 1;
+        return years * 12;
+    }
+    return 0;
+}
+
+function displayPets() {
+    const container = document.getElementById('petsContainer');
+    const startIndex = (currentPage - 1) * petsPerPage;
+    const endIndex = startIndex + petsPerPage;
+    const petsToShow = filteredPets.slice(0, endIndex);
+    
+    if (currentPage === 1) {
+        container.innerHTML = '';
+    }
+    
+    if (petsToShow.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-search display-1 text-muted"></i>
+                <h4 class="text-muted mt-3">Питомцы не найдены</h4>
+                <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+            </div>
+        `;
+        return;
+    }
+    
+    petsToShow.forEach(pet => {
+        const petCard = `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card pet-card h-100">
+                    <img src="${pet.image}" class="card-img-top" alt="${pet.name}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">${pet.name}</h5>
+                            <div class="badges">
+                                ${pet.vaccinated ? '<span class="badge bg-success me-1" title="Привит"><i class="bi bi-shield-check"></i></span>' : ''}
+                                ${pet.sterilized ? '<span class="badge bg-info me-1" title="Стерилизован"><i class="bi bi-heart"></i></span>' : ''}
+                            </div>
+                        </div>
+                        <p class="card-text flex-grow-1 text-muted small">${pet.description}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary">${getTypeLabel(pet.type)}</span>
+                                <small class="text-muted">${pet.age}</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">${pet.breed}</small>
+                                <small class="text-muted">${getGenderLabel(pet.gender)}</small>
+                            </div>
+                            <button class="btn btn-primary w-100 mt-2" onclick="showPetDetails(${pet.id})">
+                                <i class="bi bi-info-circle me-2"></i>Подробнее
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += petCard;
+    });
+}
+
+function getTypeLabel(type) {
+    const types = {
+        'cat': 'Кот',
+        'dog': 'Собака',
+        'bird': 'Птица',
+        'rodent': 'Грызун',
+        'other': 'Другое'
+    };
+    return types[type] || type;
+}
+
+function getGenderLabel(gender) {
+    return gender === 'male' ? 'Мальчик' : 'Девочка';
+}
+
+function showPetDetails(petId) {
+    if (!checkAuthForActions()) return;
+    
+    const pet = petsData.find(p => p.id === petId);
+    if (!pet) return;
+    
+    const modal = new bootstrap.Modal(document.getElementById('petModal'));
+    document.getElementById('petModalTitle').textContent = pet.name;
+    document.getElementById('petModalBody').innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <img src="${pet.image}" class="img-fluid rounded" alt="${pet.name}">
+            </div>
+            <div class="col-md-6">
+                <h6>Основная информация</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Порода:</strong> ${pet.breed}</li>
+                    <li><strong>Возраст:</strong> ${pet.age}</li>
+                    <li><strong>Пол:</strong> ${getGenderLabel(pet.gender)}</li>
+                    <li><strong>Тип:</strong> ${getTypeLabel(pet.type)}</li>
+                </ul>
+                
+                <h6>Медицинская информация</h6>
+                <ul class="list-unstyled">
+                    <li>${pet.vaccinated ? '✅ Привит' : '❌ Не привит'}</li>
+                    <li>${pet.sterilized ? '✅ Стерилизован' : '❌ Не стерилизован'}</li>
+                </ul>
+                
+                <h6>Описание</h6>
+                <p>${pet.description}</p>
+                
+                <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-primary" onclick="addToFavorites(${pet.id})">
+                        <i class="bi bi-heart me-2"></i> Добавить в избранное
+                    </button>
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-telephone me-2"></i> Связаться с владельцем
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    modal.show();
+}
+
+// Функция добавления в избранное
+async function addToFavorites(petId) {
+    if (!checkAuthForActions()) return;
+
+    try {
+        await makeApiRequest(API_CONFIG.ENDPOINTS.FAVORITES, {
+            method: 'POST',
+            body: { petId }
+        });
+        
+        showAlert('Питомец добавлен в избранное!', 'success');
+    } catch (error) {
+        showAlert('Ошибка добавления в избранное', 'danger');
+    }
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    loadPets();
+    
+    // Обработчики фильтров
+    document.getElementById('typeFilter').addEventListener('change', function() {
+        loadPets(1, { type: this.value });
+    });
+    
+    document.getElementById('ageFilter').addEventListener('change', function() {
+        loadPets(1, { age: this.value });
+    });
+    
+    document.getElementById('genderFilter').addEventListener('change', function() {
+        loadPets(1, { gender: this.value });
+    });
+    
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {
+            loadPets(1, { search: this.value });
+        }, 500);
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        loadPets(1, { sort: this.value });
+    });
+    
+    document.getElementById('loadMoreBtn').addEventListener('click', function() {
+        loadPets(currentPage + 1);
+    });
+});
+    </script>
+    <!-- Модальное окно входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                        <label for="loginEmail">Email адрес</label>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Пароль" required>
+                        <label for="loginPassword">Пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Запомнить меня</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Войти
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none" onclick="showForgotPassword()">Забыли пароль?</a>
+                    </div>
+                </form>
+                
+                <!-- Форма восстановления пароля -->
+                <form id="forgotPasswordForm" class="d-none">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="forgotEmail" placeholder="name@example.com" required>
+                        <label for="forgotEmail">Email адрес</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="forgotSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Восстановить пароль
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none" onclick="showLoginForm()">Вернуться к входу</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <span>Еще нет аккаунта? <a href="#" class="text-decoration-none" onclick="switchToRegister()">Зарегистрироваться</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="registerFirstName" placeholder="Иван" required>
+                                <label for="registerFirstName">Имя</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="registerLastName" placeholder="Иванов" required>
+                                <label for="registerLastName">Фамилия</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="registerEmail" placeholder="name@example.com" required>
+                        <label for="registerEmail">Email адрес</label>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Пароль" required minlength="6">
+                        <label for="registerPassword">Пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Подтвердите пароль" required>
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerConfirmPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="tel" class="form-control" id="registerPhone" placeholder="+7 (999) 999-99-99">
+                        <label for="registerPhone">Телефон (необязательно)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="registerCity" aria-label="Город">
+                            <option selected value="">Выберите город</option>
+                            <option value="moscow">Москва</option>
+                            <option value="spb">Санкт-Петербург</option>
+                            <option value="ekb">Екатеринбург</option>
+                            <option value="novosibirsk">Новосибирск</option>
+                            <option value="other">Другой город</option>
+                        </select>
+                        <label for="registerCity">Город</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            Я согласен с <a href="#" class="text-decoration-none">условиями использования</a> и <a href="#" class="text-decoration-none">политикой конфиденциальности</a>
+                        </label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="newsletterSubscription">
+                        <label class="form-check-label" for="newsletterSubscription">
+                            Подписаться на рассылку новостей
+                        </label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="registerSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Зарегистрироваться
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <span>Уже есть аккаунт? <a href="#" class="text-decoration-none" onclick="switchToLogin()">Войти</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebPets - Добавить питомца</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-heart-fill me-2"></i>WebPets
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="catalog.html">Каталог питомцев</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="add-pet.html">Добавить питомца</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-primary me-2" onclick="openModal('loginModal')">Войти</button>
+                    <button class="btn btn-primary" onclick="openModal('registerModal')">Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Контейнер для уведомлений -->
+    <div id="alertsContainer" class="alert-position"></div>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="card-title mb-0"><i class="bi bi-plus-circle me-2"></i>Добавить питомца</h1>
+                    </div>
+                    <div class="card-body">
+                        <form id="addPetForm">
+                            <div class="row g-3">
+                                <!-- Основная информация -->
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2"><i class="bi bi-info-circle me-2"></i>Основная информация</h5>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petName" class="form-label">Имя питомца *</label>
+                                    <input type="text" class="form-control" id="petName" required>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petType" class="form-label">Тип животного *</label>
+                                    <select class="form-select" id="petType" required>
+                                        <option value="">Выберите тип</option>
+                                        <option value="cat">Кот/кошка</option>
+                                        <option value="dog">Собака</option>
+                                        <option value="bird">Птица</option>
+                                        <option value="rodent">Грызун</option>
+                                        <option value="other">Другое</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petBreed" class="form-label">Порода</label>
+                                    <input type="text" class="form-control" id="petBreed" placeholder="Например: Сиамская, Лабрадор">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petAge" class="form-label">Возраст *</label>
+                                    <input type="text" class="form-control" id="petAge" required placeholder="Например: 2 года, 6 месяцев">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petGender" class="form-label">Пол *</label>
+                                    <select class="form-select" id="petGender" required>
+                                        <option value="">Выберите пол</option>
+                                        <option value="male">Мужской</option>
+                                        <option value="female">Женский</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="petSize" class="form-label">Размер (для собак)</label>
+                                    <select class="form-select" id="petSize">
+                                        <option value="">Не указано</option>
+                                        <option value="small">Маленький</option>
+                                        <option value="medium">Средний</option>
+                                        <option value="large">Крупный</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Описание -->
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2 mt-4"><i class="bi bi-card-text me-2"></i>Описание</h5>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="petDescription" class="form-label">Описание *</label>
+                                    <textarea class="form-control" id="petDescription" rows="4" required placeholder="Опишите характер, привычки, особенности питомца..."></textarea>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="petHistory" class="form-label">История</label>
+                                    <textarea class="form-control" id="petHistory" rows="3" placeholder="Откуда появился питомец, предыдущие условия жизни..."></textarea>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="petRequirements" class="form-label">Требования к новым хозяевам</label>
+                                    <textarea class="form-control" id="petRequirements" rows="3" placeholder="Какие условия нужны для питомца..."></textarea>
+                                </div>
+                                
+                                <!-- Фотографии -->
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2 mt-4"><i class="bi bi-camera me-2"></i>Фотографии</h5>
+                                    <label for="petPhotos" class="form-label">Фотографии питомца</label>
+                                    <input type="file" class="form-control" id="petPhotos" multiple accept="image/*">
+                                    <div class="form-text">Можно загрузить до 5 фотографий в формате JPG, PNG или GIF</div>
+                                </div>
+                                
+                                <!-- Медицинская информация -->
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2 mt-4"><i class="bi bi-heart-pulse me-2"></i>Медицинская информация</h5>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="vaccinated">
+                                        <label class="form-check-label" for="vaccinated">
+                                            Привит
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sterilized">
+                                        <label class="form-check-label" for="sterilized">
+                                            Стерилизован/кастрирован
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="passport">
+                                        <label class="form-check-label" for="passport">
+                                            Есть ветеринарный паспорт
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Контактная информация -->
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2 mt-4"><i class="bi bi-telephone me-2"></i>Контактная информация</h5>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="contactName" class="form-label">Ваше имя *</label>
+                                    <input type="text" class="form-control" id="contactName" required>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="contactPhone" class="form-label">Телефон *</label>
+                                    <input type="tel" class="form-control" id="contactPhone" required>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="contactEmail" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="contactEmail" required>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="contactCity" class="form-label">Город *</label>
+                                    <input type="text" class="form-control" id="contactCity" required>
+                                </div>
+                                
+                                <!-- Соглашение -->
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                        <label class="form-check-label" for="agreeTerms">
+                                            Я согласен с <a href="#" class="text-decoration-none">правилами размещения</a> и <a href="#" class="text-decoration-none">политикой конфиденциальности</a> *
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Кнопка отправки -->
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="bi bi-check-circle me-2"></i>Добавить питомца
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="py-4 mt-5 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5><i class="bi bi-heart-fill me-2"></i>WebPets</h5>
+                    <p class="mb-0 text-muted">Мы помогаем питомцам находить любящие дома с 2020 года.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Быстрые ссылки</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light text-decoration-none">Главная</a></li>
+                        <li><a href="catalog.html" class="text-light text-decoration-none">Каталог питомцев</a></li>
+                        <li><a href="add-pet.html" class="text-light text-decoration-none">Добавить питомца</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Следите за нами</h5>
+                    <div class="d-flex">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0 text-muted">&copy; 2023 WebPets. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- Модальные окна авторизации -->
+    <!-- Включить модальные окна из auth.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        document.getElementById('addPetForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!checkAuthForActions()) return;
+
+            const formData = new FormData();
+            
+            // Сбор данных формы
+            formData.append('name', document.getElementById('petName').value);
+            formData.append('type', document.getElementById('petType').value);
+            formData.append('breed', document.getElementById('petBreed').value);
+            formData.append('age', document.getElementById('petAge').value);
+            formData.append('gender', document.getElementById('petGender').value);
+            formData.append('size', document.getElementById('petSize').value);
+            formData.append('description', document.getElementById('petDescription').value);
+            formData.append('history', document.getElementById('petHistory').value);
+            formData.append('requirements', document.getElementById('petRequirements').value);
+            formData.append('vaccinated', document.getElementById('vaccinated').checked);
+            formData.append('sterilized', document.getElementById('sterilized').checked);
+            formData.append('passport', document.getElementById('passport').checked);
+            formData.append('contactName', document.getElementById('contactName').value);
+            formData.append('contactPhone', document.getElementById('contactPhone').value);
+            formData.append('contactEmail', document.getElementById('contactEmail').value);
+            formData.append('contactCity', document.getElementById('contactCity').value);
+            
+            // Добавление файлов
+            const photos = document.getElementById('petPhotos').files;
+            for (let i = 0; i < photos.length; i++) {
+                formData.append('photos', photos[i]);
+            }
+            
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PETS}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showAlert('Питомец успешно добавлен! После модерации он появится в каталоге.', 'success');
+                    document.getElementById('addPetForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при добавлении питомца');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showAlert(error.message || 'Произошла ошибка при добавлении питомца. Попробуйте еще раз.', 'danger');
+            }
+        });
+    </script>
+    <!-- Модальное окно входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                        <label for="loginEmail">Email адрес</label>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Пароль" required>
+                        <label for="loginPassword">Пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Запомнить меня</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Войти
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none" onclick="showForgotPassword()">Забыли пароль?</a>
+                    </div>
+                </form>
+                
+                <!-- Форма восстановления пароля -->
+                <form id="forgotPasswordForm" class="d-none">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="forgotEmail" placeholder="name@example.com" required>
+                        <label for="forgotEmail">Email адрес</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="forgotSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Восстановить пароль
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none" onclick="showLoginForm()">Вернуться к входу</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <span>Еще нет аккаунта? <a href="#" class="text-decoration-none" onclick="switchToRegister()">Зарегистрироваться</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="registerFirstName" placeholder="Иван" required>
+                                <label for="registerFirstName">Имя</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="registerLastName" placeholder="Иванов" required>
+                                <label for="registerLastName">Фамилия</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="registerEmail" placeholder="name@example.com" required>
+                        <label for="registerEmail">Email адрес</label>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Пароль" required minlength="6">
+                        <label for="registerPassword">Пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Подтвердите пароль" required>
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerConfirmPassword')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="tel" class="form-control" id="registerPhone" placeholder="+7 (999) 999-99-99">
+                        <label for="registerPhone">Телефон (необязательно)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="registerCity" aria-label="Город">
+                            <option selected value="">Выберите город</option>
+                            <option value="moscow">Москва</option>
+                            <option value="spb">Санкт-Петербург</option>
+                            <option value="ekb">Екатеринбург</option>
+                            <option value="novosibirsk">Новосибирск</option>
+                            <option value="other">Другой город</option>
+                        </select>
+                        <label for="registerCity">Город</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            Я согласен с <a href="#" class="text-decoration-none">условиями использования</a> и <a href="#" class="text-decoration-none">политикой конфиденциальности</a>
+                        </label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="newsletterSubscription">
+                        <label class="form-check-label" for="newsletterSubscription">
+                            Подписаться на рассылку новостей
+                        </label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="registerSubmitBtn">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Зарегистрироваться
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <span>Уже есть аккаунт? <a href="#" class="text-decoration-none" onclick="switchToLogin()">Войти</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
